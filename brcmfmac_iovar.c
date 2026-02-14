@@ -1,5 +1,5 @@
 /*
- * brcmfmac_iovar - Runtime iovar access for brcmfmac via nl80211 vendor commands
+ * brcm-iovar - Runtime iovar access for brcmfmac via nl80211 vendor commands
  *
  * Communicates with Broadcom/Cypress FullMAC firmware through the mainline
  * brcmfmac driver's nl80211 vendor command interface (BRCMF_VNDR_CMDS_DCMD).
@@ -32,17 +32,17 @@
  * SPDX-License-Identifier: GPL-2.0-only
  *
  * Build:
- *   gcc -Wall -O2 -o brcmfmac_iovar brcmfmac_iovar.c \
+ *   gcc -Wall -O2 -o brcm-iovar brcmfmac_iovar.c \
  *       $(pkg-config --cflags --libs libnl-3.0 libnl-genl-3.0)
  *
  * Usage:
- *   brcmfmac_iovar <interface> get_int <iovar_name>
- *   brcmfmac_iovar <interface> set_int <iovar_name> <value>
+ *   brcm-iovar <interface> get_int <iovar_name>
+ *   brcm-iovar <interface> set_int <iovar_name> <value>
  *
  * Examples:
- *   brcmfmac_iovar wlan0 get_int btc_mode
- *   brcmfmac_iovar wlan0 set_int btc_mode 4
- *   brcmfmac_iovar wlan0 get_int btc_params
+ *   brcm-iovar wlan0 get_int btc_mode
+ *   brcm-iovar wlan0 set_int btc_mode 4
+ *   brcm-iovar wlan0 get_int btc_params
  */
 
 /* Feature test macro - must be before any includes */
@@ -422,7 +422,7 @@ static int set_iovar_int(int ifindex, const char *iovar, uint32_t value)
 static void usage(const char *prog)
 {
     fprintf(stderr,
-        "brcmfmac_iovar - Runtime iovar access via nl80211 vendor commands\n"
+        "brcm-iovar - Runtime iovar access via nl80211 vendor commands\n"
         "\n"
         "Usage:\n"
         "  %s <interface> get_int <iovar>\n"

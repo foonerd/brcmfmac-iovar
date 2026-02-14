@@ -1,4 +1,4 @@
-# brcmfmac_iovar
+# brcm-iovar
 
 Runtime iovar access for Broadcom/Cypress brcmfmac WiFi firmware
 via nl80211 vendor commands.
@@ -23,7 +23,7 @@ Raspberry Pi to resolve WiFi/Bluetooth interference during A2DP streaming.
 ### Communication path
 
 ```
-brcmfmac_iovar (this tool)
+brcm-iovar (this tool)
     |
     | NL80211_CMD_VENDOR via generic netlink socket
     v
@@ -133,6 +133,22 @@ make CROSS_COMPILE=aarch64-linux-gnu-
 make strip
 ```
 
+### Docker builds (reproducible, all Raspberry Pi targets)
+
+Build binaries for **armv6l** (Pi Zero/1), **armhf** (Pi 2/3/4 32-bit), and **arm64** (Pi 3/4/5 64-bit) using the same pattern as other Volumio Docker-based builds:
+
+```bash
+# Single architecture
+./docker/run-docker-brcmfmac_iovar.sh armv6    # Pi Zero/1
+./docker/run-docker-brcmfmac_iovar.sh armhf    # Pi 2/3/4 (32-bit)
+./docker/run-docker-brcmfmac_iovar.sh arm64    # Pi 3/4/5 (64-bit)
+
+# All targets
+./build-matrix.sh
+```
+
+Output: `out/armv6/brcm-iovar`, `out/armhf/brcm-iovar`, `out/arm64/brcm-iovar`. Requires Docker (with buildx for multi-platform).
+
 
 ## Runtime dependencies (target)
 
@@ -146,8 +162,8 @@ These are typically already present on Volumio 4 (Bookworm).
 ## Usage
 
 ```
-brcmfmac_iovar <interface> get_int <iovar_name>
-brcmfmac_iovar <interface> set_int <iovar_name> <value>
+brcm-iovar <interface> get_int <iovar_name>
+brcm-iovar <interface> set_int <iovar_name> <value>
 ```
 
 Requires root or CAP_NET_ADMIN capability.
@@ -156,16 +172,16 @@ Requires root or CAP_NET_ADMIN capability.
 
 ```
 # Read current BT coexistence mode
-brcmfmac_iovar wlan0 get_int btc_mode
+brcm-iovar wlan0 get_int btc_mode
 
 # Set BT coexistence to full TDM (recommended for A2DP)
-brcmfmac_iovar wlan0 set_int btc_mode 4
+brcm-iovar wlan0 set_int btc_mode 4
 
 # Read BT coexistence parameters
-brcmfmac_iovar wlan0 get_int btc_params
+brcm-iovar wlan0 get_int btc_params
 
 # Read firmware country code
-brcmfmac_iovar wlan0 get_int country
+brcm-iovar wlan0 get_int country
 ```
 
 

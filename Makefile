@@ -1,4 +1,4 @@
-# brcmfmac_iovar - Makefile
+# brcm-iovar - Makefile
 #
 # Native build:
 #   make
@@ -10,7 +10,7 @@
 #   make CROSS_COMPILE=aarch64-linux-gnu-
 #
 # Install to Volumio system:
-#   scp brcmfmac_iovar volumio@volumio.local:/usr/local/bin/
+#   scp brcm-iovar volumio@volumio.local:/usr/local/bin/
 #
 # Dependencies (build host):
 #   libnl-3-dev libnl-genl-3-dev
@@ -20,7 +20,7 @@
 #   libnl-3-200 libnl-genl-3-200
 #
 
-PROG     = brcmfmac_iovar
+PROG     = brcm-iovar
 SRC      = brcmfmac_iovar.c
 
 CC       = $(CROSS_COMPILE)gcc
@@ -28,6 +28,7 @@ STRIP    = $(CROSS_COMPILE)strip
 
 CFLAGS   = -Wall -Wextra -Werror -O2 -std=gnu11
 CFLAGS  += $(shell pkg-config --cflags libnl-3.0 libnl-genl-3.0 2>/dev/null)
+CFLAGS  += $(EXTRA_CFLAGS)
 
 LDFLAGS  =
 LIBS     = $(shell pkg-config --libs libnl-3.0 libnl-genl-3.0 2>/dev/null)

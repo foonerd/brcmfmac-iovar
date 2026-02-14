@@ -1,0 +1,13 @@
+# arm64 - Raspberry Pi 3/4/5 (aarch64, 64-bit)
+FROM arm64v8/debian:bookworm
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    pkg-config \
+    libnl-3-dev \
+    libnl-genl-3-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /build

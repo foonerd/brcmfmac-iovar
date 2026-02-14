@@ -1,5 +1,5 @@
-# Build artifacts
-brcmfmac_iovar
+# Build artifacts (local build in repo root only)
+/brcm-iovar
 *.o
 *.d
 

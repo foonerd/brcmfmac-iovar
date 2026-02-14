@@ -18,14 +18,14 @@ This checklist tracks first hardware verification.
 ## Step 1: Deploy binary
 
 ```
-scp brcmfmac_iovar root@volumio.local:/usr/local/bin/
-ssh root@volumio.local chmod +x /usr/local/bin/brcmfmac_iovar
+scp brcm-iovar root@volumio.local:/usr/local/bin/
+ssh root@volumio.local chmod +x /usr/local/bin/brcm-iovar
 ```
 
 Verify library dependencies are satisfied:
 
 ```
-ldd /usr/local/bin/brcmfmac_iovar
+ldd /usr/local/bin/brcm-iovar
 ```
 
 Expected: libnl-3.so.200, libnl-genl-3.so.200 present.
@@ -34,7 +34,7 @@ Expected: libnl-3.so.200, libnl-genl-3.so.200 present.
 ## Step 2: Read btc_mode (basic functionality)
 
 ```
-brcmfmac_iovar wlan0 get_int btc_mode
+brcm-iovar wlan0 get_int btc_mode
 ```
 
 Expected result: `btc_mode = 1` (default value from NVRAM)
@@ -58,7 +58,7 @@ dmesg | tail -20
 ## Step 4: Write btc_mode
 
 ```
-brcmfmac_iovar wlan0 set_int btc_mode 4
+brcm-iovar wlan0 set_int btc_mode 4
 ```
 
 - [ ] Command completes without error
@@ -69,7 +69,7 @@ brcmfmac_iovar wlan0 set_int btc_mode 4
 ## Step 5: Read back after write
 
 ```
-brcmfmac_iovar wlan0 get_int btc_mode
+brcm-iovar wlan0 get_int btc_mode
 ```
 
 Expected result: `btc_mode = 4`
@@ -106,8 +106,8 @@ bluetoothctl show
 ## Step 8: Revert btc_mode
 
 ```
-brcmfmac_iovar wlan0 set_int btc_mode 1
-brcmfmac_iovar wlan0 get_int btc_mode
+brcm-iovar wlan0 set_int btc_mode 1
+brcm-iovar wlan0 get_int btc_mode
 ```
 
 - [ ] Reverts to mode 1
@@ -119,7 +119,7 @@ brcmfmac_iovar wlan0 get_int btc_mode
 Test with invalid interface:
 
 ```
-brcmfmac_iovar eth0 get_int btc_mode
+brcm-iovar eth0 get_int btc_mode
 ```
 
 - [ ] Returns meaningful error (not vendor command supported on non-brcmfmac)
@@ -128,7 +128,7 @@ Test with interface down:
 
 ```
 ip link set wlan0 down
-brcmfmac_iovar wlan0 get_int btc_mode
+brcm-iovar wlan0 get_int btc_mode
 ip link set wlan0 up
 ```
 
@@ -137,7 +137,7 @@ ip link set wlan0 up
 Test with invalid iovar:
 
 ```
-brcmfmac_iovar wlan0 get_int nonexistent_iovar_xyz
+brcm-iovar wlan0 get_int nonexistent_iovar_xyz
 ```
 
 - [ ] Returns firmware error code, does not crash
@@ -161,7 +161,7 @@ Repeat steps 2-8 on each available board:
    NL80211_ATTR_VENDOR_DATA. If the kernel's cfg80211_vendor_cmd_reply()
    nesting differs from what the handler expects, the get_int return value
    may be incorrect or the handler may report ENODATA. Check with:
-   `brcmfmac_iovar wlan0 get_int btc_mode` and compare against the NVRAM
+   `brcm-iovar wlan0 get_int btc_mode` and compare against the NVRAM
    default.
 
 2. Byte order: The firmware returns values in little-endian. On ARM (all Pi
@@ -184,7 +184,7 @@ When reporting test results, include:
 uname -a
 cat /proc/device-tree/model
 dmesg | grep brcmfmac | head -10
-brcmfmac_iovar wlan0 get_int btc_mode
+brcm-iovar wlan0 get_int btc_mode
 ```
 
 If something fails, include the full dmesg output after the failed command.
