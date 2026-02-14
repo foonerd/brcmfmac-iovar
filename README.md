@@ -106,7 +106,7 @@ Several factors obscured this mechanism:
 ### Dependencies (build host)
 
 ```
-apt-get install gcc make libnl-3-dev libnl-genl-3-dev
+apt-get install gcc make pkg-config libnl-3-dev libnl-genl-3-dev
 ```
 
 ### Native build
@@ -125,6 +125,14 @@ make CROSS_COMPILE=arm-linux-gnueabihf-
 
 ```
 make CROSS_COMPILE=aarch64-linux-gnu-
+```
+
+### Cross-compile for Pi Zero/1 (armv6l)
+
+Use the same armhf toolchain with armv6 flags, or use the Docker build and deploy `out/armv6/brcm-iovar`:
+
+```
+make CROSS_COMPILE=arm-linux-gnueabihf- EXTRA_CFLAGS='-march=armv6 -mfpu=vfp -mfloat-abi=hard -marm'
 ```
 
 ### Strip for deployment
@@ -148,6 +156,21 @@ Build binaries for **armv6l** (Pi Zero/1), **armhf** (Pi 2/3/4 32-bit), and **ar
 ```
 
 Output: `out/armv6/brcm-iovar`, `out/armhf/brcm-iovar`, `out/arm64/brcm-iovar`. Requires Docker (with buildx for multi-platform).
+
+#### ARMv6 build flags (hard-float, not soft-float)
+
+The **armv6** target uses **hard-float (VFP)** so binaries work on Volumio’s 32-bit Pi image (Pi 0–5). Flags match other Volumio Docker-based builds (e.g. lgpio-builds, volumio-bluetooth-core):
+
+```text
+-march=armv6 -mfpu=vfp -mfloat-abi=hard -marm
+```
+
+- **armv6** – instruction set for Pi Zero / Pi 1; still runs on Pi 2–5.
+- **mfpu=vfp** – VFP (hardware floating-point).
+- **mfloat-abi=hard** – hard-float ABI (armhf). **Soft-float (armel) is not used**; Volumio’s userland is armhf.
+- **marm** – 32-bit ARM code (not Thumb).
+
+So the armv6 binary is **armv6l + armhf** (VFP), not soft-float.
 
 
 ## Runtime dependencies (target)
@@ -190,7 +213,7 @@ brcm-iovar wlan0 get_int country
 | Value | Mode     | Description                                      |
 |-------|----------|--------------------------------------------------|
 | 0     | Disabled | No BT coexistence (not recommended)              |
-| 1     | Default  | Basic coexistence                                |
+| 1     | Default  | Full TDM, WiFi priority (default)                |
 | 2     | Serial   | SECI-based serial coexistence                    |
 | 4     | Full TDM | Time-division multiplexing (best for A2DP audio) |
 
@@ -245,13 +268,19 @@ Any device using the brcmfmac driver:
 
 | Raspberry Pi Model | Chip     | Bus  | Supported |
 |--------------------|----------|------|-----------|
+| Pi Zero W          | BCM43430 | SDIO | Yes       |
+| Pi Zero 2 W        | BCM43430 | SDIO | Yes       |
 | Pi 3B              | BCM43430 | SDIO | Yes       |
+| Pi 3A+             | BCM43430 | SDIO | Yes       |
 | Pi 3B+             | BCM43455 | SDIO | Yes       |
 | Pi 4B              | BCM43455 | SDIO | Yes       |
-| Pi Zero 2W         | BCM43430 | SDIO | Yes       |
-| Pi 5               | CYW43455 | PCIe | Yes       |
+| Pi 400             | BCM43456 | SDIO | Yes       |
+| Pi 5                | CYW43455 | PCIe | Yes       |
+| Pi 500             | CYW43455 | SDIO | Yes       |
 | CM4                | BCM43455 | SDIO | Yes       |
 | CM5                | CYW43455 | PCIe | Yes       |
+
+Other brcmfmac boards (e.g. compatible SBCs) are supported for iovar access; btc_mode tuning is most relevant on CYW43455/BCM43455.
 
 
 ## License

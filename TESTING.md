@@ -9,7 +9,7 @@ This checklist tracks first hardware verification.
 
 ## Prerequisites
 
-- Raspberry Pi with brcmfmac WiFi (Pi 3B+, 4B, 5, CM4, CM5, or BCM43430 boards)
+- Raspberry Pi with brcmfmac WiFi (Pi Zero W, Pi Zero 2 W, Pi 3B+, 4B, 5, CM4, CM5, or other BCM43430/CYW43455 boards)
 - Root access
 - brcmfmac driver loaded and wlan0 interface up
 - libnl-3-200 and libnl-genl-3-200 installed (standard on Volumio 4 / Bookworm)
@@ -17,8 +17,14 @@ This checklist tracks first hardware verification.
 
 ## Step 1: Deploy binary
 
+Use the binary that matches your platform (from Docker or local build):
+
+- **32-bit Volumio (Pi 0–4):** `out/armhf/brcm-iovar`
+- **64-bit (Pi 3/4/5):** `out/arm64/brcm-iovar`
+- **Pi Zero / Pi 1:** `out/armv6/brcm-iovar`
+
 ```
-scp brcm-iovar root@volumio.local:/usr/local/bin/
+scp out/armhf/brcm-iovar root@volumio.local:/usr/local/bin/brcm-iovar
 ssh root@volumio.local chmod +x /usr/local/bin/brcm-iovar
 ```
 
